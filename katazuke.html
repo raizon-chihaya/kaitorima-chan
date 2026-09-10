@@ -36,11 +36,7 @@
   .kz .gnav a:hover{color:#8fb6ee;border-bottom-color:#8fb6ee}
 
   /* 見出しの下線を、このページだけ青×黄に */
-  .kz h2{color:var(--ao-koi);text-shadow:
-      -2px -2px 0 var(--sumi),0 -2px 0 var(--sumi),2px -2px 0 var(--sumi),
-      -2px 0 0 var(--sumi),2px 0 0 var(--sumi),
-      -2px 2px 0 var(--sumi),0 2px 0 var(--sumi),2px 2px 0 var(--sumi),
-      0 5px 0 rgba(27,21,18,.22)}
+  .kz h2{color:var(--ao-koi)}   /* 縁取りは style.css の共通指定に任せる */
   .kz h2::after{background:linear-gradient(90deg,var(--ao-koi) 0 50%,var(--ki) 50% 100%)}
 
   /* ヒーロー */
@@ -59,9 +55,7 @@
   .kz-hero .tx{flex:1 1 auto;min-width:0;padding-bottom:26px}
   .kz-hero .oo{
     font-family:var(--pop);font-size:27px;line-height:1.45;color:var(--ao-koi);
-    text-shadow:-2px -2px 0 var(--sumi),0 -2px 0 var(--sumi),2px -2px 0 var(--sumi),
-      -2px 0 0 var(--sumi),2px 0 0 var(--sumi),-2px 2px 0 var(--sumi),0 2px 0 var(--sumi),2px 2px 0 var(--sumi),
-      0 5px 0 rgba(27,21,18,.22);
+    text-shadow:var(--fuchi);
   }
   .kz-hero .oo em{font-style:normal;color:var(--aka)}
   .kz-hero .muryo{
@@ -126,10 +120,7 @@
   .mousuko-card .yaji{margin-left:auto;font-family:var(--pop);font-size:24px}
 
   .kz footer{background:var(--ao-koi);background-image:none;color:#fff;border-top:5px solid var(--sumi)}
-  .kz footer .yago{color:#fff;text-shadow:
-      -2px -2px 0 var(--sumi),0 -2px 0 var(--sumi),2px -2px 0 var(--sumi),
-      -2px 0 0 var(--sumi),2px 0 0 var(--sumi),
-      -2px 2px 0 var(--sumi),0 2px 0 var(--sumi),2px 2px 0 var(--sumi)}
+  .kz footer .yago{color:#fff}   /* 縁取りは style.css の共通指定に任せる */
 </style>
 </head>
 <body class="kz">

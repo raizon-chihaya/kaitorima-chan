@@ -58,7 +58,7 @@
   .sel-katazuke .e img{height:104px}
   .sel .e h2{
     font-family:var(--pop);font-weight:400;font-size:30px;line-height:1.3;margin:0;
-    text-shadow:var(--fuchi);
+    text-shadow:var(--fuchi);   /* paint-order 対応時は style.css が stroke に差し替える */
   }
   .sel .e h2::after{display:none}
   .sel-kaitori .e h2{color:var(--aka)}

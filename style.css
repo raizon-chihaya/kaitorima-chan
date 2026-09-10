@@ -36,7 +36,7 @@
       -2px -2px 0 var(--sumi), 0 -2px 0 var(--sumi), 2px -2px 0 var(--sumi),
       -2px  0   0 var(--sumi),                       2px  0   0 var(--sumi),
       -2px  2px 0 var(--sumi), 0  2px 0 var(--sumi), 2px  2px 0 var(--sumi),
-      0 5px 0 rgba(27,21,18,.22);
+      0 3px 0 rgba(27,21,18,.28);
     --fuchi-s:
       -1px -1px 0 var(--sumi), 0 -1px 0 var(--sumi), 1px -1px 0 var(--sumi),
       -1px  0   0 var(--sumi),                       1px  0   0 var(--sumi),
@@ -86,6 +86,26 @@
   .midashi{display:flex;align-items:flex-start;gap:14px;margin-bottom:10px}
   .midashi .kao{flex:0 0 auto;width:64px;height:64px;margin-top:-2px}
   .midashi .t{min-width:0}
+
+  /* ---- 縁取りの描き方 ----
+     text-shadow を8方向に置くやり方は、2px を超えると角の間に隙間ができて
+     輪郭がガタつく。さらに落ち影（0 5px）が文字の複製に見えて「二重」になる。
+     輪郭は stroke で描いて paint-order で文字の下に回し、
+     落ち影は filter で「輪郭ごと」落とす。こうすると複製に見えない。
+     var(--fuchi) は paint-order 非対応ブラウザ向けに残してある。 */
+  @supports (paint-order: stroke) {
+    h2, .fuchi-aka, .fuchi-shiro, .fuchi-ki,
+    .ov .big, .tel-banner .num, footer .yago,
+    .sel .e h2, .kz-hero .oo{
+      text-shadow:none;
+      -webkit-text-stroke:4px var(--sumi);
+      paint-order:stroke fill;
+      filter:drop-shadow(0 3px 0 rgba(27,21,18,.3));
+    }
+    /* 見出しの下線は別要素なので、影が二重にかからないよう外す */
+    h2{filter:none}
+    h2::after{box-shadow:0 3px 0 rgba(27,21,18,.3)}
+  }
 
   /* 小判・輝き（インラインSVGを使い回す） */
   .koban{display:inline-block;vertical-align:-.15em}
