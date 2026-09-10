@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お片付け｜かたづけ！買い取り！まぁちゃん（筑紫野市二日市）</title>
+<meta name="description" content="筑紫野市二日市の片付け・不用品回収。生前整理、遺品整理、断捨離のあとの片付けまで。相談・見積り無料、追加料金なし。古物商許可店なので、値のつくものは買い取って費用を下げられます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* =========================================================
+     お片付けページ固有。
+     買取ページと同じ黄・赤・墨のうえに、作業服の青（チラシ・名刺の
+     マスコットの色）を差し色として足している。別事業だと分かりつつ、
+     同じ店だと分かる状態にするため。
+     ========================================================= */
+  :root{
+    --ao-koi:#1b4fa0;      /* 作業服の青 */
+    --ao-usu:#eaf1fb;
+    /* 清掃のイメージに合わせて、地を白に置き換える（買取ページは生成り） */
+    --kami:#ffffff;        /* 本文の地 */
+    --kami2:#f2f6fb;       /* 交互に敷く面 */
+    --sen:#dae3ee;         /* 罫線 */
+  }
+
+  header.kz{background:var(--ao-koi);background-image:none;border-bottom:5px solid var(--sumi)}
+  header.kz .head img.logo{width:auto;height:58px;filter:drop-shadow(0 3px 0 rgba(27,21,18,.22))}
+  header.kz .yago-sub{color:#fff}
+  header.kz .head-r .num{color:#fff}
+  header.kz .head-r .hrs{color:#fff}
+  @media(max-width:699px){ header.kz .head img.logo{height:48px} }
+
+  .kz .gnav{background:var(--sumi);border-bottom:4px solid var(--ao-koi)}
+  .kz .gnav a:hover{color:#8fb6ee;border-bottom-color:#8fb6ee}
+
+  /* 見出しの下線を、このページだけ青×黄に */
+  .kz h2{color:var(--ao-koi);text-shadow:
+      -2px -2px 0 var(--sumi),0 -2px 0 var(--sumi),2px -2px 0 var(--sumi),
+      -2px 0 0 var(--sumi),2px 0 0 var(--sumi),
+      -2px 2px 0 var(--sumi),0 2px 0 var(--sumi),2px 2px 0 var(--sumi),
+      0 5px 0 rgba(27,21,18,.22)}
+  .kz h2::after{background:linear-gradient(90deg,var(--ao-koi) 0 50%,var(--ki) 50% 100%)}
+
+  /* ヒーロー */
+  .kz-hero{
+    background:linear-gradient(180deg,#ffffff 0%,#e8f0fa 100%);
+    border-bottom:5px solid var(--sumi);padding:26px 0 0;overflow:hidden;position:relative;
+  }
+  /* 地紋は青で薄く敷く */
+  .kz-hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg stroke='%23b9cfea' fill='none' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M26 10v20M16 20h20'/%3E%3Cpath d='M118 82v15M110.5 89.5h15'/%3E%3Cpath d='M70 118v13M63.5 124.5h13'/%3E%3C/g%3E%3Cg stroke='%23b9cfea' fill='none' stroke-width='2.4'%3E%3Cellipse cx='96' cy='30' rx='15' ry='9.5' transform='rotate(-20 96 30)'/%3E%3Cellipse cx='30' cy='86' rx='13' ry='8' transform='rotate(14 30 86)'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .kz-hero-in{position:relative;z-index:1}
+  .kz-hero-in{display:flex;align-items:flex-end;gap:10px}
+  .kz-hero .machan{flex:0 0 auto;width:150px;margin-bottom:-5px}
+  .kz-hero .tx{flex:1 1 auto;min-width:0;padding-bottom:26px}
+  .kz-hero .oo{
+    font-family:var(--pop);font-size:27px;line-height:1.45;color:var(--ao-koi);
+    text-shadow:-2px -2px 0 var(--sumi),0 -2px 0 var(--sumi),2px -2px 0 var(--sumi),
+      -2px 0 0 var(--sumi),2px 0 0 var(--sumi),-2px 2px 0 var(--sumi),0 2px 0 var(--sumi),2px 2px 0 var(--sumi),
+      0 5px 0 rgba(27,21,18,.22);
+  }
+  .kz-hero .oo em{font-style:normal;color:var(--aka)}
+  .kz-hero .muryo{
+    display:inline-block;margin-bottom:10px;background:var(--aka);color:#fff;
+    font-family:var(--pop);font-size:15px;padding:6px 16px;border-radius:999px;
+    border:2.5px solid var(--sumi);box-shadow:var(--kage-s);
+  }
+  @media(min-width:700px){
+    .kz-hero .machan{width:210px}
+    .kz-hero .oo{font-size:38px}
+    .kz-hero .muryo{font-size:17px}
+  }
+  @media(max-width:520px){
+    .kz-hero-in{flex-direction:column-reverse;align-items:stretch}
+    .kz-hero .machan{width:132px;margin:0 0 -5px auto}
+    .kz-hero .tx{padding-bottom:14px}
+  }
+
+  /* 4つの安心 */
+  .anshin{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .anshin div{
+    background:#fff;border:2.5px solid var(--sumi);border-radius:11px;box-shadow:var(--kage-s);
+    padding:13px 12px;text-align:center;font-size:14.5px;font-weight:800;line-height:1.55;
+  }
+  .anshin div b{display:block;font-family:var(--pop);font-weight:400;font-size:18px;color:var(--ao-koi);margin-top:3px}
+  @media(min-width:700px){ .anshin{grid-template-columns:repeat(4,1fr)} }
+
+  /* 買取で費用を下げられます */
+  .toku{background:var(--sumi);color:#fff;border:3px solid var(--sumi);border-radius:14px;box-shadow:var(--kage);padding:20px;margin-top:24px}
+  .toku h3{color:var(--ki);font-size:20px;margin-bottom:8px}
+  .toku p{font-size:16px;font-weight:400;line-height:1.85}
+  .toku .hosoku{font-size:14px;color:rgba(255,255,255,.8);margin-top:10px}
+
+  /* 困りごと */
+  .komari{display:grid;gap:12px}
+  .komari div{background:#fff;border:var(--waku);border-radius:12px;box-shadow:var(--kage-s);padding:15px 17px}
+  .komari h3{font-size:17.5px;margin-bottom:5px}
+  .komari p{font-size:15.5px;font-weight:400;color:#4f4740}
+  .komari .maru{display:inline-block;background:var(--ki);border:2px solid var(--sumi);border-radius:999px;
+    padding:3px 13px;font-family:var(--pop);font-size:14.5px;margin-top:8px}
+  @media(min-width:700px){ .komari{grid-template-columns:1fr 1fr} }
+
+  .kz-obi{background:var(--ao-usu);background-image:none;border-top:5px solid var(--sumi);border-bottom:5px solid var(--sumi)}
+  .kz .step::before{background:var(--ao-koi)}
+  .kz .nayami li{border-left-color:var(--ao-koi)}
+  .kz .tel-banner{background:var(--ao-koi)}
+  .kz .faq summary::before{background:var(--ao-koi)}
+  .kz .faq summary::after{color:var(--ao-koi)}
+  .kz .fixbar .tel{background:var(--ao-koi)}
+  .kz .sidebtn .t{background:var(--ao-koi)}
+
+  /* もう一方の事業への導線 */
+  .mousuko{background:var(--ki);background-image:var(--jimon);border-top:5px solid var(--sumi);padding:34px 0}
+  .mousuko-card{
+    background:#fff;border:3px solid var(--sumi);border-radius:16px;box-shadow:var(--kage);
+    padding:20px;display:flex;align-items:center;gap:16px;text-decoration:none;
+  }
+  .mousuko-card img{flex:0 0 auto;width:82px;height:82px}
+  .mousuko-card .t{min-width:0}
+  .mousuko-card h3{font-size:20px;color:var(--aka);margin-bottom:3px}
+  .mousuko-card p{font-size:15px;font-weight:500;color:#4f4740;line-height:1.65}
+  .mousuko-card .yaji{margin-left:auto;font-family:var(--pop);font-size:24px}
+
+  .kz footer{background:var(--ao-koi);background-image:none;color:#fff;border-top:5px solid var(--sumi)}
+  .kz footer .yago{color:#fff;text-shadow:
+      -2px -2px 0 var(--sumi),0 -2px 0 var(--sumi),2px -2px 0 var(--sumi),
+      -2px 0 0 var(--sumi),2px 0 0 var(--sumi),
+      -2px 2px 0 var(--sumi),0 2px 0 var(--sumi),2px 2px 0 var(--sumi)}
+</style>
+</head>
+<body class="kz">
+
+<header class="kz">
+  <div class="wrap">
+    <div class="head">
+      <div class="head-l">
+        <img class="logo" src="logo-katazuke.png" alt="かたづけ！買い取り！まぁちゃん">
+        <div class="yago-sub">筑紫野市二日市の片付け・不用品回収<br>古物商許可店だから、買取もできます</div>
+      </div>
+      <div class="head-r">
+        <a class="num" href="tel:0925559972">092-555-9972</a>
+        <div class="hrs">営業時間 9:30〜18:00（日曜・祝日定休）</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="gnav" aria-label="メニュー">
+  <ul>
+    <li><a href="index.html">TOP</a></li>
+    <li><a href="#komari">できること</a></li>
+    <li><a href="#nagare">ご依頼の流れ</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#tenpo">店舗案内</a></li>
+    <li><a href="kaitori.html">買取のページ</a></li>
+  </ul>
+</nav>
+
+<div class="kz-hero">
+  <div class="wrap kz-hero-in">
+    <img class="machan" src="mascot-katazuke.png" alt="まぁちゃん">
+    <div class="tx">
+      <span class="muryo">ご相談・お見積り 無料</span>
+      <p class="oo">かたづけのこと、<br><em>まるごと</em>お任せください。</p>
+    </div>
+  </div>
+</div>
+
+<div class="obi kz-obi">
+  <div class="wrap">
+    <div class="tel-box">
+      <div class="label">お片付けのご相談・お見積り</div>
+      <a class="tel-num" href="tel:0925559972">092-555-9972</a>
+      <div class="hours">9:30〜18:00／日曜・祝日 定休</div>
+      <p class="tel-tap">番号を押すと、そのままお電話がかかります</p>
+      <div class="badges"><span class="badge">相談無料</span><span class="badge">見積り無料</span><span class="badge">1点から</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="sidebtn">
+  <a class="l" href="#faq">よくある質問</a>
+  <a class="t" href="tel:0925559972">お電話で無料相談</a>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="midashi">
+      <img class="kao" src="mascot-face-katazuke.png" alt="" aria-hidden="true">
+      <div class="t"><h2>4つの安心</h2></div>
+    </div>
+    <p class="h2sub">はじめてのお片付けでも、心配な点がないようにしています。</p>
+    <div class="anshin">
+      <div>見積りのあとの<b>追加料金なし</b></div>
+      <div>買取で<b>費用を軽減</b></div>
+      <div>明朗会計で<b>安心</b></div>
+      <div>地元の業者で<b>安心</b></div>
+    </div>
+
+    <div class="toku">
+      <h3>片付けの費用を、買取で下げられます</h3>
+      <p>私どもは古物商の許可を持っています。片付けの途中で出てきた貴金属やブランド品、まだ使える家電などを、その場で査定してお買取りできます。そのぶんを片付けの費用から差し引けますので、処分だけをお願いするより安く済むことがほとんどです。</p>
+      <p class="hosoku">古物商許可：福岡県公安委員会 第909990030823号</p>
+    </div>
+  </div>
+</section>
+
+<section class="nayami" id="komari">
+  <div class="wrap">
+    <h2>こんなお困りごと、ありませんか</h2>
+    <p class="h2sub">どれか一つでも当てはまれば、お電話ください。</p>
+    <div class="komari">
+      <div>
+        <h3>粗大ごみ、不用品の処分</h3>
+        <p>ソファ、家具、家電、まとめて出た袋物まで。</p>
+        <span class="maru">1点から回収・処分</span>
+      </div>
+      <div>
+        <h3>生前整理・遺品整理のあと</h3>
+        <p>仕分けが終わったあとに残る荷物を、まとめて片付けます。</p>
+        <span class="maru">荷物の後片付け</span>
+      </div>
+      <div>
+        <h3>貴金属・ブランド品・家電</h3>
+        <p>値のつくものは、片付けの現場でそのまま拝見します。</p>
+        <span class="maru">その場で査定・買取り</span>
+      </div>
+      <div>
+        <h3>エアコンの取外し</h3>
+        <p>設置・取外しも承ります。リサイクル料もお見積書に書いて出します。</p>
+        <span class="maru">取外しもOK</span>
+      </div>
+    </div>
+    <p style="margin-top:22px;font-size:16.5px">終活、生前整理、遺品整理、断捨離。どこから手をつければよいか分からない、という状態で構いません。まず見せていただくところからです。</p>
+  </div>
+</section>
+
+<section class="nagare" id="nagare">
+  <div class="wrap">
+    <h2>ご相談から、お支払いまで</h2>
+    <p class="h2sub">お見積りまでは無料です。金額を見てからお決めください。</p>
+    <div class="steps">
+      <div class="step"><h3>ご相談</h3><p>お電話、またはご来店でお聞かせください。おおよその間取りと、片付けたい範囲が分かると話が早いです。</p></div>
+      <div class="step"><h3>お伺いして、お見積り</h3><p>現地を拝見して、何を残して何を処分するかを一緒に仕分けし、お見積りをお出しします。ここまで無料です。</p></div>
+      <div class="step"><h3>ご納得いただいてから、作業日を決める</h3><p>金額にご納得いただけない場合は、お断りいただいて構いません。しつこくご連絡することはありません。</p></div>
+      <div class="step"><h3>作業が終わってから、現金でお支払い</h3><p>先にお金をいただくことはありません。買い取れるものがあれば、その分を差し引いてご精算します。</p></div>
+    </div>
+    <p class="chui">お見積りのあとに追加料金をいただくことは、基本的にありません。作業の内容を変える必要が出た場合は、必ず先にご説明してからにします。</p>
+  </div>
+</section>
+
+<section class="satei">
+  <div class="wrap">
+    <div class="tel-banner">
+      <img class="kao" src="mascot-face-katazuke.png" alt="" aria-hidden="true">
+      <div class="cap">まずは、お電話でご相談ください</div>
+      <a class="num" href="tel:0925559972">092-555-9972</a>
+      <div class="sub">9:30〜18:00／日曜・祝日 定休</div>
+      <p class="tel-tap shiro">番号を押すと、そのままお電話がかかります</p>
+      <div class="marks"><span>相談無料</span><span>見積り無料</span><span>出張無料</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <h2>よくあるご質問</h2>
+    <p class="h2sub">お電話でよくいただくご質問をまとめました。</p>
+    <details><summary>見積りだけお願いできますか</summary><div class="a"><img class="kao" src="mascot-face-katazuke.png" alt="答"><p>もちろんです。お見積りは無料ですし、金額を見てお断りいただいても費用はいただきません。</p></div></details>
+    <details><summary>あとから追加料金を取られませんか</summary><div class="a"><img class="kao" src="mascot-face-katazuke.png" alt="答"><p>基本的にありません。作業の内容を変える必要が出た場合だけ、必ず先にご説明して、ご了承をいただいてから進めます。</p></div></details>
+    <details><summary>一部屋だけ、一点だけでもお願いできますか</summary><div class="a"><img class="kao" src="mascot-face-katazuke.png" alt="答"><p>できます。粗大ごみ1点からお受けしています。まとめてでなくて構いません。</p></div></details>
+    <details><summary>何から手をつければよいか分かりません</summary><div class="a"><img class="kao" src="mascot-face-katazuke.png" alt="答"><p>その状態で結構です。伺って、残すものと処分するものを一緒に仕分けするところからお手伝いします。</p></div></details>
+    <details><summary>価値のあるものが混ざっているか分かりません</summary><div class="a"><img class="kao" src="mascot-face-katazuke.png" alt="答"><p>その場で拝見します。16年買取をしてきた店ですので、処分される前にひととおり見せていただくと、値がつくものを残せます。</p></div></details>
+    <details><summary>近所に知られたくないのですが</summary><div class="a"><img class="kao" src="mascot-face-katazuke.png" alt="答"><p>社名の入っていない車で伺うこともできます。ご相談ください。</p></div></details>
+  </div>
+</section>
+
+<div class="mousuko">
+  <div class="wrap">
+    <a class="mousuko-card" href="kaitori.html">
+      <img src="mascot-face.png" alt="">
+      <span class="t"><h3>買取のページはこちら</h3><p>金・宝石・時計・着物・切手・金券・骨董品など。1点からお持ちいただけます。</p></span>
+      <span class="yaji">›</span>
+    </a>
+  </div>
+</div>
+
+<section class="tenpo" id="tenpo">
+  <div class="wrap">
+    <h2>店舗のご案内</h2>
+    <p class="h2sub">筑紫野市二日市を中心に、太宰府市・小郡市・大野城市・春日市からもご依頼をいただいています。</p>
+    <dl>
+      <dt>店名</dt><dd>かたづけ！買い取り！まぁちゃん</dd>
+      <dt>代表</dt><dd>安東 学</dd>
+      <dt>住所</dt><dd>〒818-0072 福岡県筑紫野市二日市中央4-17-17-C号</dd>
+      <dt>電話</dt><dd><a href="tel:0925559972">092-555-9972</a><br>FAXも同じ番号です</dd>
+      <dt>メール</dt><dd><a href="mailto:massy0727@yahoo.co.jp">massy0727@yahoo.co.jp</a></dd>
+      <dt>営業時間</dt><dd>9:30〜18:00</dd>
+      <dt>定休日</dt><dd>毎週日曜日・祝日</dd>
+      <dt>駐車場</dt><dd>あり（大賀駐車場をご利用ください）</dd>
+    </dl>
+    <div class="map">
+      <iframe src="https://maps.google.com/maps?q=%E7%A6%8F%E5%B2%A1%E7%9C%8C%E7%AD%91%E7%B4%AB%E9%87%8E%E5%B8%82%E4%BA%8C%E6%97%A5%E5%B8%82%E4%B8%AD%E5%A4%AE4-17-17&hl=ja&z=17&output=embed"
+        title="買い取り！まぁちゃん 店舗の地図" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E7%9C%8C%E7%AD%91%E7%B4%AB%E9%87%8E%E5%B8%82%E4%BA%8C%E6%97%A5%E5%B8%82%E4%B8%AD%E5%A4%AE4-17-17" target="_blank" rel="noopener">
+      地図アプリで開く（道案内）
+    </a>
+    <p class="kobutsu">古物商許可：福岡県公安委員会 第909990030823号<br>代表：安東 学</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <img class="kao" src="mascot-face-katazuke.png" alt="" aria-hidden="true">
+    <div class="yago">かたづけ！買い取り！まぁちゃん</div>
+    福岡県筑紫野市二日市中央4-17-17-C号／福岡県公安委員会 第909990030823号<br>
+    © 買い取り まぁちゃん
+  </div>
+</footer>
+
+<nav class="fixbar">
+  <a class="tel" href="tel:0925559972">電話をかける<small>092-555-9972</small></a>
+  <a class="line" href="kaitori.html">買取のページへ<small>金・宝石・時計・着物など</small></a>
+</nav>
+
+</body>
+</html>
