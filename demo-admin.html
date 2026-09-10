@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>買い取り！まぁちゃん｜管理画面（デモ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     管理画面デモ — 奥様が毎週さわる画面のイメージ
+     本番は Cloudflare Pages Functions + D1 + R2 の予定。
+     いまは全部この1ファイルで完結していて、データは
+     ブラウザの中（localStorage）に保存している。サーバーは要らない。
+
+     方針：
+     - 触るのは「買取実績」だけ。全部いじれると触らなくなるし崩れる
+     - スマホ前提。指で押せる大きさ、18px以上の文字
+     - 写真はその場で縮小・圧縮する（4MBの直撮りをそのまま載せない）
+     - 下書き・承認はなし。押したら公開。ただし直せる・消せる
+     ========================================================= */
+  :root{
+    --ki:#ffbc0f; --aka:#ee1d23; --sumi:#241a12; --kuro:#1b1512;
+    --midori:#0a8f43; --hai:#6b6157; --sen:#e2d9c6;
+    --kami:#fdfaf2; --shiro:#fff;
+    --pop:"Mochiy Pop One","Hiragino Maru Gothic ProN","M PLUS Rounded 1c",sans-serif;
+    --maru:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+    --waku:2.5px solid var(--sumi);
+    --kage:0 4px 0 var(--sumi);
+    --kage-s:0 3px 0 var(--sumi);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:var(--maru);font-size:18px;font-weight:500;line-height:1.8;color:var(--sumi);background:var(--kami)}
+  img{max-width:100%;display:block}
+  .wrap{max-width:620px;margin:0 auto;padding:0 16px}
+
+  /* デモである、とはっきり出しておく（納品物と取り違えないため） */
+  .demobar{background:var(--sumi);color:var(--ki);text-align:center;font-size:13px;font-weight:800;padding:7px 12px;line-height:1.5}
+
+  header{background:var(--ki);border-bottom:5px solid var(--sumi);padding:12px 0}
+  .head{display:flex;align-items:center;gap:12px}
+  .head .kao{width:46px;height:46px;border-radius:50%;border:2.5px solid var(--sumi);background:#fff;box-shadow:var(--kage-s);flex:0 0 auto}
+  .head .t{font-family:var(--pop);font-size:19px;line-height:1.35}
+  .head .t small{display:block;font-family:var(--maru);font-size:12.5px;font-weight:800}
+  .head .out{margin-left:auto;font-size:13px;font-weight:800;background:#fff;border:2px solid var(--sumi);border-radius:999px;padding:5px 13px;cursor:pointer;font-family:inherit}
+
+  .tabs{display:flex;background:var(--kuro);border-bottom:4px solid var(--aka)}
+  .tabs button{flex:1;background:none;border:0;color:#fff;font-family:var(--pop);font-size:15px;padding:13px 6px;cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-4px}
+  .tabs button.on{color:var(--ki);border-bottom-color:var(--ki)}
+
+  main{padding:22px 0 60px}
+  h2{font-family:var(--pop);font-weight:400;font-size:21px;margin-bottom:4px}
+  .lead{font-size:14.5px;color:var(--hai);margin-bottom:18px;line-height:1.75}
+
+  .btn{
+    display:block;width:100%;text-align:center;font-family:var(--pop);font-size:19px;
+    padding:16px;border:var(--waku);border-radius:999px;box-shadow:var(--kage);cursor:pointer;
+    background:var(--aka);color:#fff;line-height:1.4;
+  }
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--sumi)}
+  .btn.sub{background:#fff;color:var(--sumi);font-size:17px;padding:13px}
+  .btn.midori{background:var(--midori)}
+
+  .card{background:#fff;border:var(--waku);border-radius:14px;box-shadow:var(--kage-s);padding:18px;margin-bottom:18px}
+
+  label{display:block;font-weight:800;font-size:16px;margin:18px 0 7px}
+  label .nin{font-weight:500;font-size:13.5px;color:var(--hai)}
+  input[type=text],input[type=email],input[type=password],input[type=date],select{
+    width:100%;padding:14px;border:var(--waku);border-radius:10px;font-size:17px;font-family:inherit;background:#fff;color:var(--sumi)
+  }
+  .hint{font-size:13px;color:var(--hai);margin-top:6px;line-height:1.7}
+
+  /* 写真を選ぶところ */
+  .photo{position:relative;border:2.5px dashed var(--sumi);border-radius:12px;background:#fff;text-align:center;padding:26px 14px;cursor:pointer}
+  .photo input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+  .photo .ic{font-size:34px;line-height:1}
+  .photo .t1{font-family:var(--pop);font-size:18px;margin-top:6px}
+  .photo .t2{font-size:13.5px;color:var(--hai)}
+  .preview{margin-top:12px;display:none}
+  .preview img{width:100%;border:var(--waku);border-radius:12px}
+  .preview .size{font-size:13.5px;color:var(--hai);margin-top:8px;line-height:1.7}
+  .preview .size b{color:var(--midori)}
+
+  /* 一覧 */
+  .rows{display:grid;gap:12px}
+  .row{background:#fff;border:var(--waku);border-radius:12px;box-shadow:var(--kage-s);display:flex;gap:12px;padding:11px;align-items:center}
+  .row .th{width:74px;height:74px;flex:0 0 74px;border:2px solid var(--sumi);border-radius:9px;overflow:hidden;background:#f2ead6;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--hai);text-align:center}
+  .row .th img{width:100%;height:100%;object-fit:cover}
+  .row .b{flex:1;min-width:0}
+  .row .hi{font-size:12.5px;color:var(--hai);font-weight:700}
+  .row .cat{font-family:var(--pop);font-size:16.5px;line-height:1.4}
+  .row .yen{font-family:var(--pop);font-size:17px;color:var(--aka)}
+  .row .ope{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+  .row .ope button{font-family:inherit;font-size:13.5px;font-weight:800;border:2px solid var(--sumi);border-radius:8px;background:#fff;padding:6px 10px;cursor:pointer}
+  .row .ope .del{color:var(--aka)}
+
+  .empty{text-align:center;color:var(--hai);font-size:15px;padding:34px 10px;border:2px dashed var(--sen);border-radius:12px}
+
+  /* 保存しました、の帯 */
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);
+    background:var(--midori);color:#fff;font-family:var(--pop);font-size:17px;
+    padding:14px 26px;border:var(--waku);border-radius:999px;box-shadow:var(--kage);
+    transition:transform .28s cubic-bezier(.2,1.2,.4,1),opacity .2s;z-index:90;white-space:nowrap;opacity:0;pointer-events:none}
+  .toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+  .note{background:#fff8e0;border:2px solid var(--sumi);border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.8;margin-top:22px}
+  .note b{font-family:var(--pop);font-weight:400;display:block;margin-bottom:4px}
+
+  /* ログイン画面 */
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:var(--ki);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg stroke='%23e0a200' fill='none' stroke-width='2.4' stroke-linecap='round' opacity='.55'%3E%3Cpath d='M26 10v20M16 20h20'/%3E%3Cpath d='M118 82v15M110.5 89.5h15'/%3E%3C/g%3E%3Cellipse cx='96' cy='30' rx='15' ry='9.5' transform='rotate(-20 96 30)' stroke='%23e0a200' fill='none' stroke-width='2.4' opacity='.5'/%3E%3C/svg%3E")}
+  #login .box{background:#fff;border:3px solid var(--sumi);border-radius:16px;box-shadow:var(--kage);padding:26px 22px;max-width:400px;width:100%;text-align:center}
+  #login .kao{width:84px;height:84px;border-radius:50%;border:3px solid var(--sumi);box-shadow:var(--kage-s);margin:0 auto 14px;background:#fff}
+  #login h1{font-family:var(--pop);font-weight:400;font-size:22px;line-height:1.4;margin-bottom:4px}
+  #login .sub{font-size:14px;color:var(--hai);margin-bottom:18px}
+  #login label{text-align:left}
+  #login .btn{margin-top:22px}
+  #login .who{margin-top:18px;font-size:13.5px;color:var(--hai);line-height:1.8;border-top:1px solid var(--sen);padding-top:14px}
+
+  .hidden{display:none!important}
+  @media(min-width:640px){ .btn{font-size:20px} h2{font-size:24px} }
+</style>
+</head>
+<body>
+
+<div class="demobar">これは商談用のデモです。データはこの端末の中だけに保存され、公開サイトには反映されません</div>
+
+<!-- ============ ログイン ============ -->
+<div id="login">
+  <div class="box">
+    <img class="kao" src="mascot-face.png" alt="">
+    <h1>買い取り！まぁちゃん<br>管理画面</h1>
+    <p class="sub">買取実績を追加するところです</p>
+    <label for="lg-id">メールアドレス</label>
+    <input id="lg-id" type="email" value="okusan@machan.jp" autocomplete="off">
+    <label for="lg-pw">パスワード</label>
+    <input id="lg-pw" type="password" value="demodemo" autocomplete="off">
+    <button class="btn" id="lg-go">ログイン</button>
+    <p class="who">アカウントは<b>奥様用と社長用の2つ</b>。<br>どちらでログインしたかは記録に残ります。</p>
+  </div>
+</div>
+
+<!-- ============ 管理画面本体 ============ -->
+<div id="app" class="hidden">
+
+  <header>
+    <div class="wrap head">
+      <img class="kao" src="mascot-face.png" alt="">
+      <div class="t">まぁちゃん 管理画面<small>奥様でログイン中</small></div>
+      <button class="out" id="logout">ログアウト</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="list" class="on">買取実績</button>
+    <button data-tab="add">＋ 追加する</button>
+    <button data-tab="souba">本日の相場 ▲</button>
+  </nav>
+
+  <main>
+
+    <!-- ---- 一覧 ---- -->
+    <section id="tab-list" class="wrap">
+      <h2>買取実績</h2>
+      <p class="lead">新しいものが上に出ます。ここに並んだものが、そのままお店のホームページに出ます。</p>
+      <div class="rows" id="rows"></div>
+      <div class="note">
+        <b>この画面でできること</b>
+        追加する・直す・消す、の3つだけです。<br>
+        ホームページの他の場所（文章やレイアウト）は、ここからは変わりません。<b style="display:inline">壊れる心配がない</b>ようにしてあります。
+      </div>
+    </section>
+
+    <!-- ---- 追加・編集 ---- -->
+    <section id="tab-add" class="wrap hidden">
+      <h2 id="add-title">買取実績を追加する</h2>
+      <p class="lead">写真を選んで、種類を選んで、押すだけです。金額は入れても入れなくても構いません。</p>
+
+      <div class="card">
+        <label>写真</label>
+        <div class="photo" id="photo-box">
+          <input type="file" id="f-photo" accept="image/*" capture="environment">
+          <div class="ic">📷</div>
+          <div class="t1">写真を撮る／選ぶ</div>
+          <div class="t2">スマホで撮ってそのまま選べます</div>
+        </div>
+        <div class="preview" id="preview">
+          <img id="prev-img" alt="">
+          <p class="size" id="prev-size"></p>
+        </div>
+
+        <label for="f-cat">品物の種類</label>
+        <select id="f-cat">
+          <option>金・プラチナ</option>
+          <option>ダイヤ・宝石</option>
+          <option>ブランドバッグ</option>
+          <option>時計</option>
+          <option>切手・はがき</option>
+          <option>金券・商品券</option>
+          <option>古銭・記念硬貨</option>
+          <option>骨董・古美術</option>
+          <option>着物・帯</option>
+          <option>カメラ・その他</option>
+          <option>お酒</option>
+          <option>勲章・軍装品</option>
+        </select>
+
+        <label for="f-price">買取金額 <span class="nin">（入れなくてもかまいません）</span></label>
+        <input id="f-price" type="text" inputmode="numeric" placeholder="38,000">
+        <p class="hint">金額を入れない実績も混ぜておくと、自然に見えます。</p>
+
+        <label for="f-date">日付</label>
+        <input id="f-date" type="date">
+        <p class="hint">今日の日付が最初から入っています。変えたいときだけ触ってください。</p>
+      </div>
+
+      <button class="btn" id="save">この内容で公開する</button>
+      <button class="btn sub hidden" id="cancel" style="margin-top:10px">やめる</button>
+    </section>
+
+    <!-- ---- 相場（未決定） ---- -->
+    <section id="tab-souba" class="wrap hidden">
+      <h2>本日の相場 ▲</h2>
+      <p class="lead">▲ここは当日ご相談。実績（週1回）と相場（毎日動く）は性格が違うので、画面を分けてあります。</p>
+      <div class="card">
+        <label for="s-k24">K24（純金）1gあたり</label>
+        <input id="s-k24" type="text" inputmode="numeric" placeholder="00,000">
+        <label for="s-pt">Pt1000（純プラチナ）1gあたり</label>
+        <input id="s-pt" type="text" inputmode="numeric" placeholder="0,000">
+      </div>
+      <button class="btn midori" id="save-souba">相場を更新する</button>
+      <div class="note">
+        <b>ここは「作らない」選択肢もあります</b>
+        毎日の手入力は、必ずどこかで止まります。止まった数字が出ているほうが、数字が無いより信用を落とします。<br>
+        ・毎日入れられるなら、この画面をつける<br>
+        ・むずかしいなら、相場の枠ごと外して「お電話でご確認ください」にする<br>
+        ・将来は相場を自動で取ってくる形にもできます
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast">保存しました</div>
+
+<script>
+/* ---------------------------------------------------------
+   デモ用。本番は Cloudflare Pages Functions + D1 + R2 に置き換える。
+   表示側（index.html）の JISSEKI 配列を、ここが吐くJSONに
+   差し替えるだけで移行できる形にしてある。
+--------------------------------------------------------- */
+const KEY = 'machan-demo-jisseki';
+const SEED = [
+  { id:1, cat:'金・プラチナ',   price:'98,000', date:'2026-09-02', img:'img/item-gold.jpg' },
+  { id:2, cat:'切手・はがき',   price:'41,500', date:'2026-08-30', img:'img/item-stamp.jpg' },
+  { id:3, cat:'時計',           price:'',       date:'2026-08-28', img:'img/item-watch.jpg' },
+  { id:4, cat:'ダイヤ・宝石',   price:'56,000', date:'2026-08-25', img:'img/item-jewel.jpg' },
+  { id:5, cat:'古銭・記念硬貨', price:'12,000', date:'2026-08-21', img:'img/item-coin.jpg' }
+];
+
+let data = load();
+let editingId = null;
+let pickedImage = null;
+
+function load(){
+  try{ const v = JSON.parse(localStorage.getItem(KEY)); if(Array.isArray(v)) return v; }catch(e){}
+  return SEED.slice();
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+}
+
+/* ---- ログイン（デモなので中身は見ていない） ---- */
+document.getElementById('lg-go').addEventListener('click', function(){
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  window.scrollTo(0,0);
+});
+document.getElementById('logout').addEventListener('click', function(){
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login').classList.remove('hidden');
+  window.scrollTo(0,0);
+});
+
+/* ---- タブ ---- */
+const tabs = Array.from(document.querySelectorAll('.tabs button'));
+function show(name){
+  tabs.forEach(function(b){ b.classList.toggle('on', b.dataset.tab === name); });
+  ['list','add','souba'].forEach(function(n){
+    document.getElementById('tab-'+n).classList.toggle('hidden', n !== name);
+  });
+  window.scrollTo(0,0);
+}
+tabs.forEach(function(b){
+  b.addEventListener('click', function(){
+    if(b.dataset.tab === 'add' && editingId !== null) resetForm();
+    show(b.dataset.tab);
+  });
+});
+
+/* ---- 写真：その場で縮小・圧縮する ----
+   スマホの直撮りは3〜5MBある。そのまま載せるとページが開かなくなるので、
+   長辺1200pxまで縮めて JPEG 80% にしてから保存する。            */
+const MAXPX = 1200, QUALITY = 0.8;
+document.getElementById('f-photo').addEventListener('change', function(e){
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  const before = file.size;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const im = new Image();
+    im.onload = function(){
+      let w = im.width, h = im.height;
+      const scale = Math.min(1, MAXPX / Math.max(w, h));
+      w = Math.round(w * scale); h = Math.round(h * scale);
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      cv.getContext('2d').drawImage(im, 0, 0, w, h);
+      pickedImage = cv.toDataURL('image/jpeg', QUALITY);
+      const after = Math.round(pickedImage.length * 3 / 4);
+      document.getElementById('prev-img').src = pickedImage;
+      document.getElementById('preview').style.display = 'block';
+      document.getElementById('prev-size').innerHTML =
+        'この写真は自動で小さくしました<br>' + kb(before) + ' → <b>' + kb(after) + '</b>（' + w + '×' + h + '）';
+    };
+    im.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+function kb(n){
+  return n >= 1024*1024 ? (n/1024/1024).toFixed(1)+' MB' : Math.round(n/1024)+' KB';
+}
+
+/* ---- 一覧 ---- */
+function fmtDate(iso){
+  const p = String(iso).split('-');
+  return p.length === 3 ? (p[0]+'年'+Number(p[1])+'月'+Number(p[2])+'日') : iso;
+}
+function render(){
+  const el = document.getElementById('rows');
+  if(!data.length){
+    el.innerHTML = '<div class="empty">まだ登録がありません。<br>上の「＋ 追加する」から入れてください。</div>';
+    return;
+  }
+  el.innerHTML = '';
+  data.forEach(function(j){
+    const d = document.createElement('div');
+    d.className = 'row';
+    const thumb = j.img ? '<img src="'+j.img+'" alt="">' : '写真<br>なし';
+    d.innerHTML =
+      '<div class="th">'+thumb+'</div>' +
+      '<div class="b">' +
+        '<div class="hi">'+fmtDate(j.date)+'</div>' +
+        '<div class="cat">'+j.cat+'</div>' +
+        (j.price ? '<div class="yen">'+j.price+' 円</div>' : '') +
+      '</div>' +
+      '<div class="ope">' +
+        '<button data-ed="'+j.id+'">直す</button>' +
+        '<button class="del" data-del="'+j.id+'">消す</button>' +
+      '</div>';
+    el.appendChild(d);
+  });
+}
+document.getElementById('rows').addEventListener('click', function(e){
+  const ed = e.target.getAttribute('data-ed');
+  const del = e.target.getAttribute('data-del');
+  if(ed) startEdit(Number(ed));
+  if(del){
+    const j = data.find(function(x){ return x.id === Number(del); });
+    if(confirm('この実績を消します。よろしいですか。\n\n'+fmtDate(j.date)+'　'+j.cat)){
+      data = data.filter(function(x){ return x.id !== Number(del); });
+      save(); render(); toast('消しました');
+    }
+  }
+});
+
+/* ---- 追加・編集 ---- */
+function today(){
+  const d = new Date();
+  const p = function(n){ return String(n).padStart(2,'0'); };
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+}
+function resetForm(){
+  editingId = null; pickedImage = null;
+  document.getElementById('add-title').textContent = '買取実績を追加する';
+  document.getElementById('f-cat').selectedIndex = 0;
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-date').value = today();
+  document.getElementById('f-photo').value = '';
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('save').textContent = 'この内容で公開する';
+  document.getElementById('cancel').classList.add('hidden');
+}
+function startEdit(id){
+  const j = data.find(function(x){ return x.id === id; });
+  if(!j) return;
+  editingId = id; pickedImage = j.img || null;
+  document.getElementById('add-title').textContent = '買取実績を直す';
+  const sel = document.getElementById('f-cat');
+  Array.from(sel.options).forEach(function(o,i){ if(o.value === j.cat) sel.selectedIndex = i; });
+  document.getElementById('f-price').value = j.price || '';
+  document.getElementById('f-date').value = j.date;
+  if(j.img){
+    document.getElementById('prev-img').src = j.img;
+    document.getElementById('preview').style.display = 'block';
+    document.getElementById('prev-size').textContent = 'いまの写真';
+  } else {
+    document.getElementById('preview').style.display = 'none';
+  }
+  document.getElementById('save').textContent = 'この内容で直す';
+  document.getElementById('cancel').classList.remove('hidden');
+  show('add');
+}
+document.getElementById('cancel').addEventListener('click', function(){ resetForm(); show('list'); });
+
+document.getElementById('save').addEventListener('click', function(){
+  const cat = document.getElementById('f-cat').value;
+  const price = document.getElementById('f-price').value.trim();
+  const date = document.getElementById('f-date').value || today();
+  if(editingId !== null){
+    const j = data.find(function(x){ return x.id === editingId; });
+    j.cat = cat; j.price = price; j.date = date; j.img = pickedImage;
+    toast('直しました');
+  } else {
+    data.unshift({ id: Date.now(), cat: cat, price: price, date: date, img: pickedImage });
+    toast('公開しました');
+  }
+  data.sort(function(a,b){ return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+  save(); render(); resetForm(); show('list');
+});
+
+/* ---- 相場 ---- */
+document.getElementById('save-souba').addEventListener('click', function(){ toast('相場を更新しました'); });
+
+/* ---- 保存しました、の帯 ---- */
+let tid;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(tid); tid = setTimeout(function(){ t.classList.remove('on'); }, 2200);
+}
+
+resetForm();
+render();
+</script>
+</body>
+</html>
